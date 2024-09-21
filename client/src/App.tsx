@@ -163,7 +163,7 @@ function App() {
             <p className="mt-2 text-sm text-gray-700">
               Click 'Start tracking' to begin receiving live updates for all vessels.
             </p>
-            <p>Currently tracking: {updatedVessels.join(', ')}</p>
+            {/* <p>Currently tracking: {updatedVessels.join(', ')}</p> */}
           </div>
           <div className="mt-4 sm:ml-16 sm:mt-0 flex space-x-2">
             {timeLeft !== null && (
