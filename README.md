@@ -1,5 +1,8 @@
 # Vessel Tracking System
 
+![image](https://github.com/user-attachments/assets/cf34014b-d10d-4b90-9176-07e73729cf83)
+
+
 This is the server for the vessel tracking system. It is built using Node.js and Express on the backend. The server exposes three endpoints:
 
 - `/fetch-vessels` - returns a list of vessels
