@@ -44,3 +44,7 @@ The client is a simple React application that fetches a list of vessels from the
 ## Assumptions
 
 - The table is prepopulated with a list of vessels, assuming it is a short list so no pagination was implemented.
+
+## Docker
+
+- its not working as expected, I am still working on it.
