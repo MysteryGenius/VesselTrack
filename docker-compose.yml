@@ -1,0 +1,23 @@
+version: '3.8'
+
+name: vessel-track
+
+services:
+  client:
+    build: ./client
+    ports:
+      - "5173:5173"
+    env_file:
+      - ./client/.env
+    environment:
+      - VITE_BASE_URL=${BASE_URL}
+      - VITE_WS_URL=${WS_URL}
+    depends_on:
+      - server
+
+  server:
+    build: ./server
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000

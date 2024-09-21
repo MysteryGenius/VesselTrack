@@ -9,17 +9,30 @@ const ADDITIONAL_TIMER = 60000; // 3 seconds for testing (should be 60000 for 1 
 
 function App() {
   const [vessels, setVessels] = useState<Vessel[]>([]);
-  const [updatedVessels, setUpdatedVessels] = useState<number[]>([]);
+  const [, setUpdatedVessels] = useState<number[]>([]);
   const [isTracking, setIsTracking] = useState(false);
   const [timeLeft, setTimeLeft] = useState<number | null>(null);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const wsRef = useRef<WebSocket | null>(null);
   const isAdditionalTimerActive = useRef(false);
 
-  // @ts-expect-error - Ignore TS error for fetcher function
-  const fetcher = (...args: unknown[]) => fetch(...args).then((res) => res.json());
+  const fetcher = (url: string) => fetch(url, {
+    credentials: 'include', // Include credentials in the request
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    mode: 'no-cors',
+  }).then((res) => {
+    if (!res.ok) {
+      throw new Error('An error occurred while fetching the data.');
+    }
+    return res.json();
+  });
 
-  const { data: initialVessels, error, isValidating } = useSWR(`${import.meta.env.VITE_BASE_URL!}/fetch-vessels`, fetcher);
+  const { data: initialVessels, error, isValidating } = useSWR<Vessel[]>(
+    `${import.meta.env.VITE_BASE_URL}/fetch-vessels`,
+    fetcher
+  );
 
   useEffect(() => {
     if (initialVessels) {
@@ -151,9 +164,6 @@ function App() {
     startTimer();
   }, [startTimer]);
 
-  if (error) return <div className='failed'>failed to load</div>;
-  if (isValidating) return <div className="Loading">Loading...</div>;
-
   return (
     <Layout>
       <div className="px-4 sm:px-6 lg:px-8">
@@ -209,6 +219,8 @@ function App() {
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-gray-200 bg-white">
+                    {error && <tr><td colSpan={5} className="px-4 py-4 text-sm text-red-600">{error.message}</td></tr>}
+                    {isValidating && <tr><td colSpan={5} className="px-4 py-4 text-sm text-gray-500">Loading...</td></tr>}
                     {vessels.map((vessel: Vessel) => (
                       <tr key={vessel.imo}>
                         <td className="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
