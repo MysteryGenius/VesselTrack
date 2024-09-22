@@ -16,23 +16,10 @@ function App() {
   const wsRef = useRef<WebSocket | null>(null);
   const isAdditionalTimerActive = useRef(false);
 
-  const fetcher = (url: string) => fetch(url, {
-    credentials: 'include', // Include credentials in the request
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    mode: 'no-cors',
-  }).then((res) => {
-    if (!res.ok) {
-      throw new Error('An error occurred while fetching the data.');
-    }
-    return res.json();
-  });
+  // @ts-expect-error - Ignore TS error for fetcher function
+  const fetcher = (...args: unknown[]) => fetch(...args).then((res) => res.json());
 
-  const { data: initialVessels, error, isValidating } = useSWR<Vessel[]>(
-    `${import.meta.env.VITE_BASE_URL}/fetch-vessels`,
-    fetcher
-  );
+  const { data: initialVessels, error, isValidating } = useSWR(`${import.meta.env.VITE_BASE_URL!}/fetch-vessels`, fetcher);
 
   useEffect(() => {
     if (initialVessels) {
